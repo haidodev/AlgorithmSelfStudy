@@ -1,3 +1,7 @@
+// TAG: Bitmask DP
+// Link: https://cses.fi/problemset/task/1690
+// n city, m one-way flights between those n city, count the number of flight start from 1 
+// and end in n, flight through all the cities
 #include <iostream>
 #define N 20
 #define MOD 1000000007
@@ -16,6 +20,8 @@ int dp[N][1 << N] = {0}, n;
 //     }
 //     return res;
 // }
+
+// Above is the preivous implementation, got TLE. probably becase using Recursive implementation
 int Hamiltonian() {
     dp[0][1] = 1;
     for (int mask = 3; mask < 1 << (n - 1); mask += 2) {
@@ -38,6 +44,25 @@ int Hamiltonian() {
     }
     return res;
 }
+
+// This one using Iterative approach:
+/*
+It's seem that the standard implementation was the biggest loop was iterate through all 
+the mask (2^N), then iterate through each element, then each element in the inner-loop
+
+dp[end][mask] count number of route  fly over all cities in "mask", and end in "end" 
+DP function dp[i][S] = sum of all dp[x][S \ {i}] for all x belong to adj[i]
+
+
+for this problem, since the bit represent the 1st city is alway 1, so it's no good iterative odd mask,
+that why the step used in this problem is 2
+
+then in the second loop, loop though all the set bit in the mask and choose that to be the end point 
+for this mask
+
+lastly, the last loop, loop through all bit set, check if this start connected with the end, if so
+add this to the current count, note that S \ {x} = mask - (1 << end)
+*/
 int main() {
     int m;
     scanf("%d%d", &n, &m);
