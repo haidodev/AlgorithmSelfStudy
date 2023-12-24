@@ -3,24 +3,49 @@
 #include <climits> // For boundary
 #include <vector>
 #include <queue>
+#include <numeric> // accumulate
+#include <utility> // pair
 using namespace std;
 
 template <typename T>
-using mat = std::vector<std::vector<T> >;
+using mat = std::vector<std::vector<T>>;
+
+// Function to initialize a matrix with a specific number of rows and columns
+template <typename T>
+mat<T> matInit(int rows, int cols, const T& initialValue = T()) {
+    return mat<T>(rows, std::vector<T>(cols, initialValue));
+}
 
 // CATEGORY: Printing VECTOR
+
+void printArr(int arr[], int n) {
+    for (int i = 0; i < n; ++i){
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+}
 void printVec(vector<int> v)
 {
     for (int i = 0; i < v.size(); ++i)
         cout << v[i] << " ";
     cout << "\n";
 }
-void printMat(vector<vector<int> > v)
+void printMat(vector<vector<int>> v)
 {
     for (int i = 0; i < v.size(); ++i)
         printVec(v[i]);
 }
-
+int maxElm(vector<int> v)
+{
+    // accumulate(v.begin(), v.end(), 0, [](int a, int b)
+    //            { return max(a, b); });
+    int maxELm = v[0];
+    for (vector<int>::iterator it = v.begin(); it != v.end(); ++it)
+    {
+        maxELm = max(maxELm, *it);
+    }
+    return maxELm;
+}
 // CATEGORY: Binary Search
 int lowerBound(const int arr[], int size, int target)
 {
@@ -122,34 +147,60 @@ int maxNumInRange()
             printf("MAX([%d, %d]) = %d\n", i - l, i, arr[mono.front()]);
     }
 }
-int LongestIncreasingSubsequences() {
+int LongestIncreasingSubsequences()
+{
     int arr[] = {14, 7, 5, 14, 0, 17, 2, 9, 10, 19, 8, 2, 13, 12, 10, 7, 7, 4, 11, 1}, n = 20;
     vector<int> dp;
-    for (int i = 0; i < n; ++i) {
-        vector<int> :: iterator it = lower_bound(dp.begin(), dp.end(), arr[i]);
-        if (it == dp.end()) dp.push_back(arr[i]);
-        else *it = arr[i];
+    for (int i = 0; i < n; ++i)
+    {
+        vector<int>::iterator it = lower_bound(dp.begin(), dp.end(), arr[i]);
+        if (it == dp.end())
+            dp.push_back(arr[i]);
+        else
+            *it = arr[i];
     }
     return dp.size();
-
 }
-int LongestCommonSubstring() {
+int LongestCommonSubstring()
+{
     string s1 = "hofubmnylkra", s2 = "pqhgxgdofcvmr";
     vector<int> dp(s1.size(), 0);
-    for (int i = 0; i < s2.size(); ++i){
+    for (int i = 0; i < s2.size(); ++i)
+    {
         int tmp = dp[0];
         dp[0] = max(dp[0], int(s1[0] == s2[i]));
-        for (int j = 1; j < s1.size(); ++j) {
+        for (int j = 1; j < s1.size(); ++j)
+        {
             int tmpDP = dp[j];
-            if (s2[i] == s1[j]) dp[j] = tmp + 1;
-            else dp[j] = max(dp[j], dp[j - 1]);
+            if (s2[i] == s1[j])
+                dp[j] = tmp + 1;
+            else
+                dp[j] = max(dp[j], dp[j - 1]);
             tmp = tmpDP;
         }
     }
     return dp.back();
 }
-int Knapsack() {
-    
+int Knapsack(const std::vector<int>& weights, const std::vector<int>& values, int capacity)
+{
+    int n = weights.size();
+
+    // Create a 2D table to store the results of subproblems
+    std::vector<std::vector<int>> dp(n + 1, std::vector<int>(capacity + 1, 0));
+
+    // Fill the dp table using bottom-up dynamic programming
+    for (int i = 1; i <= n; ++i) {
+        for (int w = 0; w <= capacity; ++w) {
+            if (weights[i - 1] <= w) {
+                dp[i][w] = std::max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    // The result is in the bottom-right cell of the dp table
+    return dp[n][capacity];
 }
 int main()
 {

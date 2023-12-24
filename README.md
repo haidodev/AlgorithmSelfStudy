@@ -4,6 +4,7 @@ Code Runner: https://marketplace.visualstudio.com/items?itemName=formulahendry.c
 C++: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
 
 C++ Environment: https://www.msys2.org/
+Code-runner: https://stackoverflow.com/questions/39091173/how-to-enable-c17-on-mac
 
 Approach:
 
